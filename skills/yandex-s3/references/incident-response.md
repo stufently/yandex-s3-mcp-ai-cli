@@ -1,0 +1,3 @@
+# Инцидент
+
+Начни с `doctor`, конфигурации, head/list и аудита. SDK повторяет 429/503 с адаптивной задержкой. Сверь часы и ограничения провайдера: https://yandex.cloud/ru/docs/storage/s3/ https://yandex.cloud/ru/docs/storage/s3/api-ref/ https://yandex.cloud/ru/docs/storage/concepts/storage-class https://yandex.cloud/ru/docs/storage/pricing https://yandex.cloud/ru/docs/storage/concepts/pre-signed-urls https://yandex.cloud/ru/docs/storage/concepts/limits https://yandex.cloud/ru/docs/storage/s3/api-ref/response-codes. Не меняй скоуп или политику подтверждения для обхода отказа. Баланс, ключи и аккаунт проверяет владелец.

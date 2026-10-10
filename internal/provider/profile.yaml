@@ -1,0 +1,47 @@
+id: yandex
+display_name: Yandex Cloud
+env_prefix: YANDEX_S3_
+uri_scheme: yandex-s3
+binary: yandex-s3
+default_pool: ru-central1
+path_style: true
+pools:
+  - id: ru-central1
+    endpoint: https://storage.yandexcloud.net
+    location: Россия, ru-central1
+    multi_az: true
+    storage_classes: [STANDARD, COLD, ICE, INTELLIGENT_TIERING]
+storage_classes:
+  - {id: STANDARD, name_ru: Стандартное, price_rub_gb_month: 2.376, verified: false, checked_at: "2026-10-10"}
+  - {id: COLD, name_ru: Холодное, price_rub_gb_month: 1.2672, verified: false, checked_at: "2026-10-10"}
+  - {id: ICE, name_ru: Ледяное, price_rub_gb_month: 0.6336, verified: false, checked_at: "2026-10-10"}
+  - {id: INTELLIGENT_TIERING, name_ru: Умное (нет фиксированной цены), price_rub_gb_month: 0, verified: false, checked_at: "2026-10-10"}
+features:
+  versioning: true
+  object_lock_config: true
+  object_retention: true
+  object_tagging: true
+  bucket_tagging: true
+  lifecycle: true
+  cors: true
+  bucket_policy: true
+  conditional_writes: false
+  conditional_delete: false
+  multipart: true
+  presign: true
+  acl: true
+limits:
+  max_put_bytes: 5000000000
+  max_parts: 10000
+  rate_limits: {}
+presign_max_seconds: 2592000
+verified: false
+presign_note: "Документация: 30 дней; нужна живая проверка. Условные PUT/complete документированы, destination Copy и условный Delete не подтверждены; защищённая запись отключена консервативно."
+docs_urls:
+  - https://yandex.cloud/ru/docs/storage/s3/
+  - https://yandex.cloud/ru/docs/storage/s3/api-ref/
+  - https://yandex.cloud/ru/docs/storage/concepts/storage-class
+  - https://yandex.cloud/ru/docs/storage/pricing
+  - https://yandex.cloud/ru/docs/storage/concepts/pre-signed-urls
+  - https://yandex.cloud/ru/docs/storage/concepts/limits
+  - https://yandex.cloud/ru/docs/storage/s3/api-ref/response-codes
