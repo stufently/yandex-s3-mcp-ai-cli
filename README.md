@@ -1,12 +1,14 @@
 # Yandex Cloud S3 MCP Server & AI CLI
 
-![Version](https://img.shields.io/badge/version-0.1.0-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/status-development-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
-Yandex Cloud S3 Object Storage через MCP и CLI: Claude Code, Cursor и Codex помогают выполнять бэкап и работать с файлами, а AI-агент получает ограниченный доступ и подтверждение опасных действий.
+MCP-сервер и CLI для S3 Яндекс Облака (Yandex Cloud Object Storage): поиск файлов, просмотр версий и восстановление резервных копий из Claude Code, Cursor и Codex. Бинарь `yandex-s3` объединяет MCP, командную строку и skill агента.
+
+[English guide](README.en.md) · [Каталог S3 MCP-серверов](https://stufently.github.io/s3-mcp-ai-cli-kit/)
 
 ## English
 
-A single Go binary for Yandex Cloud Object Storage: a stdio MCP server, streaming CLI and installable agent skill. Read-only MCP access is the default; independent write/delete/admin levels, bucket/prefix scope, human approval and confined local file access protect data. Large files travel directly through presigned URLs or multipart uploads. See the [full English guide](README.en.md).
+A Go MCP server, CLI and agent skill for Yandex Cloud S3 Object Storage. Connect Claude Code, Cursor and Codex to scoped object storage for inspection and backup recovery. ru-central1; profile restrictions apply to no-overwrite writes. See the [full English guide](README.en.md).
 
 ## Быстрый старт
 
@@ -66,6 +68,18 @@ Codex: ~/.codex/config.toml. Существующая таблица требу�
 Списки — до 1000 элементов с continuation_token; версии/multipart имеют второй маркер. Inline get/put — 262144 байт, preview — 65536; большие файлы идут через presigned URL или FILE_ROOT. Ответ содержит structuredContent и JSON-текст; текст свыше 256 КиБ заменяется краткой сводкой. Ошибки: code/message/retryable; 429/503 SDK повторяет адаптивно.
 
 Аналитика сканирует максимум max_scan (по умолчанию 10000); partial/token отмечают неполный результат. Prefix usage выдаёт страницы агрегатов через next_result_offset. Это не биллинг.
+
+## Сценарий: Инвентаризация объектов и проверка версий бэкапов
+
+Перед восстановлением проверьте содержимое префикса и версии объектов Яндекс Object Storage. Команда `versions` полезна для бакета с включённым версионированием; `cp` ниже скачивает текущую версию:
+
+```bash
+yandex-s3 ls backups/daily/ --json
+yandex-s3 versions backups/daily/ --json
+yandex-s3 cp s3://backups/daily/archive.tar ./restored-yandex.tar
+```
+
+Примеры используют существующий бакет `backups` и объект `daily/archive.tar`; замените их своими значениями. Профиль и API облака ещё требуют [живой проверки](TASKS.md).
 
 ## CLI
 
@@ -127,6 +141,12 @@ Lifecycle, ACL, bucket tagging и object retention могут поддержив
 
 ## FAQ
 
+**Как подключить Яндекс Object Storage к Claude Code?** Соберите `yandex-s3`, сохраните S3-ключ через `auth set` и выполните `mcp install --client claude-code --scope project`. MCP стартует с доступом только на чтение; ключ не записывается в конфигурацию клиента.
+
+**Почему загрузка в Яндекс S3 без перезаписи может быть запрещена?** В профиле `conditional_writes=false`: гарантии условий для всех путей записи ещё не подтверждены. Не обходите отказ ради автоматизации; подробности и ожидания живой проверки — в [ресерче](docs/research/yandex-s3.md).
+
+**Можно ли выдать ссылку на файл из Яндекс S3?** `yandex-s3 presign backups/daily/archive.tar --expires 3600` создаёт временную GET-ссылку. Считайте её секретом; максимальный срок и фактическое поведение сервиса ещё требуют живой проверки.
+
 **Что такое MCP-сервер?** Программа предоставляет агентам инструменты и ресурсы через Model Context Protocol; здесь stdio.
 
 **Как подключить MCP-сервер к Claude Code?** Сохрани ключи auth set, затем используй project install либо напечатанную user-команду.
@@ -140,7 +160,18 @@ Lifecycle, ACL, bucket tagging и object retention могут поддержив
 
 ## Другие провайдеры
 
-Семейство: Selectel, Yandex Cloud, VK Cloud, Cloud.ru, Timeweb Cloud, MWS, Beget. Все используют [общий kit](https://github.com/stufently/s3-mcp-ai-cli-kit).
+[Общий каталог: MCP-серверы и CLI для российских S3](https://stufently.github.io/s3-mcp-ai-cli-kit/).
+
+| Провайдер | Репозиторий | Сценарий |
+|---|---|---|
+| Selectel | [selectel-s3-mcp-ai-cli](https://github.com/stufently/selectel-s3-mcp-ai-cli) | Выбор пула и восстановление резервных копий |
+| Yandex Cloud | [yandex-s3-mcp-ai-cli](https://github.com/stufently/yandex-s3-mcp-ai-cli) | Инвентаризация объектов и проверка версий бэкапов |
+| VK Cloud | [vkcloud-s3-mcp-ai-cli](https://github.com/stufently/vkcloud-s3-mcp-ai-cli) | Проверка Hotbox/Icebox и доступ к нужному региону |
+| Cloud.ru | [cloudru-s3-mcp-ai-cli](https://github.com/stufently/cloudru-s3-mcp-ai-cli) | Диагностика доступа к Evolution Object Storage |
+| Timeweb Cloud | [timeweb-s3-mcp-ai-cli](https://github.com/stufently/timeweb-s3-mcp-ai-cli) | Восстановление архивов и учёт объёма префикса |
+| MWS | [mws-s3-mcp-ai-cli](https://github.com/stufently/mws-s3-mcp-ai-cli) | Проверка HMAC-доступа и короткие ссылки на архивы |
+| Beget | [beget-s3-mcp-ai-cli](https://github.com/stufently/beget-s3-mcp-ai-cli) | Просмотр и восстановление файлов из готового бакета |
+| Shared Go kit | [s3-mcp-ai-cli-kit](https://github.com/stufently/s3-mcp-ai-cli-kit) | Общие MCP, CLI, защиты и CI |
 
 ## Лицензия
 

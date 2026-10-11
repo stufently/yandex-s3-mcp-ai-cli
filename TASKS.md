@@ -7,3 +7,10 @@
 - Предположения: поддержка destination conditional copy и conditional delete; десятичная граница PUT; нормализация месячных цен. Детали и источники — docs/research/yandex-s3.md.
 - Нужна живая проверка: эндпоинты/регионы, условные заголовки, классы/цены, presign, API и ошибки на реальном тестовом бакете с ключом владельца.
 - Релиз v0.1.0 и публикация OCI/Registry отложены до живой проверки.
+
+## Обнаружение проекта — 11.10.2026
+
+- Завершено: описание, homepage и 20 topics проверены через GitHub API.
+- Завершено: README RU/EN с отдельным сценарием, FAQ провайдера и ссылками на все проекты и общий каталог.
+- Проверено в Docker: ссылки README и страниц, восемь PNG/SVG; у провайдеров check_docs (заголовки, compat и Registry schema). Изменения подготовлены для доставки в main; статус текущего CI — в Actions.
+- Social preview: SVG и PNG 1280×640 готовы в `docs/assets/`; установка в GitHub Settings требует авторизованного браузера администратора. [Инструкция](https://github.com/stufently/s3-mcp-ai-cli-kit/blob/main/docs/social-preview.md).
