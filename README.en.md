@@ -28,6 +28,37 @@ After publication: ghcr.io/stufently/yandex-s3-mcp-ai-cli:0.1.0. Build locally w
 
 ## Connect to Claude Code, Cursor, Codex
 
+[![Add yandex-s3 MCP server to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=yandex-s3&config=eyJjb21tYW5kIjoiZG9ja2VyIiwiYXJncyI6WyJydW4iLCItaSIsIi0tcm0iLCItZSIsIllBTkRFWF9TM19BQ0NFU1NfS0VZX0lEIiwiLWUiLCJZQU5ERVhfUzNfU0VDUkVUX0FDQ0VTU19LRVkiLCItZSIsIllBTkRFWF9TM19QT09MIiwiZ2hjci5pby9zdHVmZW50bHkveWFuZGV4LXMzLW1jcC1haS1jbGk6MC4xLjAiXSwiZW52Ijp7IllBTkRFWF9TM19BQ0NFU1NfS0VZX0lEIjoiJHtlbnY6WUFOREVYX1MzX0FDQ0VTU19LRVlfSUR9IiwiWUFOREVYX1MzX1NFQ1JFVF9BQ0NFU1NfS0VZIjoiJHtlbnY6WUFOREVYX1MzX1NFQ1JFVF9BQ0NFU1NfS0VZfSIsIllBTkRFWF9TM19QT09MIjoiJHtlbnY6WUFOREVYX1MzX1BPT0x9In19)
+
+The button installs the MCP server from the Docker image `ghcr.io/stufently/yandex-s3-mcp-ai-cli:0.1.0`, read-only. Keys stay out of the config: Cursor fills `${env:…}` from the environment, so set `YANDEX_S3_ACCESS_KEY_ID` and `YANDEX_S3_SECRET_ACCESS_KEY` where Cursor starts, and `YANDEX_S3_POOL` when the bucket is not in the default pool (empty means the default). The same block works for Windsurf (`mcp_config.json`) and by hand in `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "yandex-s3": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "YANDEX_S3_ACCESS_KEY_ID",
+        "-e",
+        "YANDEX_S3_SECRET_ACCESS_KEY",
+        "-e",
+        "YANDEX_S3_POOL",
+        "ghcr.io/stufently/yandex-s3-mcp-ai-cli:0.1.0"
+      ],
+      "env": {
+        "YANDEX_S3_ACCESS_KEY_ID": "${env:YANDEX_S3_ACCESS_KEY_ID}",
+        "YANDEX_S3_SECRET_ACCESS_KEY": "${env:YANDEX_S3_SECRET_ACCESS_KEY}",
+        "YANDEX_S3_POOL": "${env:YANDEX_S3_POOL}"
+      }
+    }
+  }
+}
+```
+
 ```bash
 yandex-s3 mcp install --client cursor --dry-run
 yandex-s3 mcp install --client cursor
